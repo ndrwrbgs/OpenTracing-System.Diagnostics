@@ -9,7 +9,7 @@
     <projectUrl>https://github.com/ndrwrbgs/OpenTracing-System.Diagnostics</projectUrl>
     <iconUrl>http://opentracing.io/img/favicon-32x32.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>Listen to Trace.CorrelationManager.X events and send them to OpenTracing</description>
+    <description>Provides interop between System.Diagnostics tracing constructs and OpenTracing. E.g. `Trace.CorrelationManager` -> `OpenTracing.ITracer`; `OpenTracing.ITracer` -> `TraceSource`; `TraceListener` -> `OpenTracing.ITracer`</description>
     <releaseNotes>Initial</releaseNotes>
     <copyright>Copyright 2018</copyright>
     <tags>OpenTracing Trace CorrelationManager</tags>

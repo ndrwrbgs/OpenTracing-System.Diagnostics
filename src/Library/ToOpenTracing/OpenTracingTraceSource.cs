@@ -78,7 +78,7 @@ namespace OpenTracing.Contrib.SystemDiagnostics.ToOpenTracing
             {
                 var curOpName = curOpNameStack.Value.Peek();
                 
-                traceSourceSink.TraceInformation($"Operation {curOpName} tag: {args.Key} = {args.Value}");
+                traceSourceSink.TraceData(TraceEventType.Information, 4, new KeyValuePair<string, object>(args.Key, args.Value));
             };
 
             return new TracerTraceSourcePair(
