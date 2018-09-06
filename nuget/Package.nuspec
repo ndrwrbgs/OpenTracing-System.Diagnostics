@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>OpenTracing.Contrib.SystemDiagnosticsBridge</id>
-    <version>0.1</version>
+    <version>0.2.0</version>
     <authors>ndrwrbgs</authors>
     <owners>ndrwrbgs</owners>
     <licenseUrl>https://github.com/ndrwrbgs/OpenTracing-System.Diagnostics/blob/master/LICENSE</licenseUrl>
@@ -15,6 +15,7 @@
     <tags>OpenTracing Trace CorrelationManager</tags>
     <dependencies>
       <dependency id="OpenTracing" version="0.12.0" />
+      <dependency id="OpenTracing.Contrib.EventHookTracer" version="0.3.0" />
     </dependencies>
   </metadata>
 </package>
