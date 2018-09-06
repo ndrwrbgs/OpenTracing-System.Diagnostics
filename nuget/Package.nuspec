@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package >
   <metadata>
-    <id>OpenTracing.Contrib.CorrelationManagerBridge</id>
+    <id>OpenTracing.Contrib.SystemDiagnosticsBridge</id>
     <version>0.1</version>
     <authors>ndrwrbgs</authors>
     <owners>ndrwrbgs</owners>
