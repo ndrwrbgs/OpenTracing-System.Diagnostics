@@ -46,7 +46,24 @@ namespace OpenTracing.Contrib.SystemDiagnostics.ToOpenTracing
             var traceSourceSink = new TraceSource("OpenTracing", SourceLevels.All);
 
             AsyncLocal<Stack<string>> curOpNameStack = new AsyncLocal<Stack<string>> {Value = new Stack<string>()};
-            AsyncLocal<string> currentVectorClock = new AsyncLocal<string>();
+            AsyncLocal<string> nextVectorClock = new AsyncLocal<string>();
+            nextVectorClock.Value = "1";
+
+            void ExtendClock() => nextVectorClock.Value += ".1";
+            string CurrentClock() => nextVectorClock.Value.Substring(0, nextVectorClock.Value.LastIndexOf(".") >= 0 ? nextVectorClock.Value.LastIndexOf(".") : 0);
+            void PopAndIncrementClock()
+            {
+                var cur = CurrentClock();
+                var lastPartOfCurrentClock = cur.Substring(
+                    cur.LastIndexOf(".") >= 0
+                        ? (cur.LastIndexOf(".") + 1)
+                        : 0);
+                var toTrim = lastPartOfCurrentClock.Length == cur.Length
+                    ? lastPartOfCurrentClock.Length
+                    : lastPartOfCurrentClock.Length + 1;
+                var lastIntOfCurrentClock = int.Parse(lastPartOfCurrentClock);
+                nextVectorClock.Value = cur.Substring(0, cur.Length - toTrim) + "." + (lastIntOfCurrentClock + 1);
+            }
 
             var eventHookTracer = new EventHookTracer(new MockTracer());
             eventHookTracer.SpanActivated += (sender, span) =>
@@ -54,31 +71,45 @@ namespace OpenTracing.Contrib.SystemDiagnostics.ToOpenTracing
                 // Need to copy to truly be AsyncLocal
                 curOpNameStack.Value = new Stack<string>(curOpNameStack.Value.Reverse());
                 curOpNameStack.Value.Push(span.OperationName);
+                ExtendClock();
 
-                traceSourceSink.TraceEvent(TraceEventType.Start, 1, "Starting {0}", span.OperationName);
+                traceSourceSink.TraceEvent(TraceEventType.Start, 1, "{1} Starting {0}", span.OperationName, CurrentClock());
             };
             eventHookTracer.SpanFinished += (sender, span) =>
             {
                 // Need to copy to truly be AsyncLocal
                 curOpNameStack.Value = new Stack<string>(curOpNameStack.Value.Reverse());
                 var previousSpan = curOpNameStack.Value.Pop();
-
+                
                 if (!string.Equals(previousSpan, span.OperationName))
                 {
                     throw new InvalidOperationException("Code error - you finished a span that was not the currently active one");
                 }
 
-                traceSourceSink.TraceEvent(TraceEventType.Stop, 2, "Finished {0}", span.OperationName);
+                traceSourceSink.TraceEvent(TraceEventType.Stop, 2, "{1} Finished {0}", span.OperationName, CurrentClock());
+                PopAndIncrementClock();
             };
             eventHookTracer.SpanLog += (sender, args) =>
             {
-                traceSourceSink.TraceData(TraceEventType.Information, 3, args.Fields);
+                var dict = new Dictionary<string, object>();
+                dict["vectorClock"] = CurrentClock();
+
+                foreach (var keyValuePair in args.Fields)
+                {
+                    dict.Add(keyValuePair.Key, keyValuePair.Value);
+                }
+
+                traceSourceSink.TraceData(TraceEventType.Information, 3, dict);
             };
             eventHookTracer.SpanSetTag += (sender, args) =>
             {
                 var curOpName = curOpNameStack.Value.Peek();
                 
-                traceSourceSink.TraceData(TraceEventType.Information, 4, new KeyValuePair<string, object>(args.Key, args.Value));
+                traceSourceSink.TraceData(TraceEventType.Information, 4, new Dictionary<string, object>
+                {
+                    ["vectorClock"] = CurrentClock(),
+                    [args.Key] = args.Value
+                });
             };
 
             return new TracerTraceSourcePair(
