@@ -342,46 +342,82 @@ namespace Test
                     var prevFore = Console.ForegroundColor;
                     bool changedBack = false;
                     bool changedFore = false;
-                    switch (level)
+
+                    // TODO: Abstract out
+                    // Color scheme selection:
+                    if (false)
                     {
-                        case TraceEventType.Critical:
-                            changedFore = true;
-                            Console.ForegroundColor = ConsoleColor.Red;
-                            break;
-                        case TraceEventType.Error:
-                            changedFore = true;
-                            Console.ForegroundColor = ConsoleColor.Magenta;
-                            break;
-                        case TraceEventType.Warning:
-                            changedFore = true;
-                            Console.ForegroundColor = ConsoleColor.Yellow;
-                            break;
-                        case TraceEventType.Information:
-                            changedFore = true;
-                            Console.ForegroundColor = ConsoleColor.Gray;
-                            break;
-                        case TraceEventType.Verbose:
-                            changedFore = true;
-                            Console.ForegroundColor = ConsoleColor.DarkGray;
-                            break;
-                        case TraceEventType.Start:
-                            changedFore = true;
-                            Console.ForegroundColor = ConsoleColor.Green;
-                            break;
-                        case TraceEventType.Stop:
-                            changedFore = true;
-                            Console.ForegroundColor = ConsoleColor.Green;
-                            break;
-                        case TraceEventType.Suspend:
-                            break;
-                        case TraceEventType.Resume:
-                            break;
-                        case TraceEventType.Transfer:
-                            break;
-                        default:
-                            // I'd rather fail, since we didn't expect this, but Jerry would be mad :)
-                            ////throw new ArgumentOutOfRangeException(nameof(level), level, null);
-                            break;
+                        switch (level)
+                        {
+                            case TraceEventType.Critical:
+                                changedFore = true;
+                                Console.ForegroundColor = ConsoleColor.Red;
+                                break;
+                            case TraceEventType.Error:
+                                changedFore = true;
+                                Console.ForegroundColor = ConsoleColor.Magenta;
+                                break;
+                            case TraceEventType.Warning:
+                                changedFore = true;
+                                Console.ForegroundColor = ConsoleColor.Yellow;
+                                break;
+                            case TraceEventType.Information:
+                                changedFore = true;
+                                Console.ForegroundColor = ConsoleColor.Gray;
+                                break;
+                            case TraceEventType.Verbose:
+                                changedFore = true;
+                                Console.ForegroundColor = ConsoleColor.DarkGray;
+                                break;
+                            case TraceEventType.Start:
+                                changedFore = true;
+                                Console.ForegroundColor = ConsoleColor.Green;
+                                break;
+                            case TraceEventType.Stop:
+                                changedFore = true;
+                                Console.ForegroundColor = ConsoleColor.Green;
+                                break;
+                            case TraceEventType.Suspend:
+                                break;
+                            case TraceEventType.Resume:
+                                break;
+                            case TraceEventType.Transfer:
+                                break;
+                            default:
+                                // I'd rather fail, since we didn't expect this, but Jerry would be mad :)
+                                ////throw new ArgumentOutOfRangeException(nameof(level), level, null);
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        var valid = new[]
+                        {
+                            ///// <summary>The color gray.</summary>
+                            //Gray,
+                            ///// <summary>The color dark gray.</summary>
+                            //DarkGray,
+                            ///// <summary>The color blue.</summary>
+                            //Blue,
+                            ///// <summary>The color green.</summary>
+                            //Green,
+                            ///// <summary>The color cyan (blue-green).</summary>
+                            //Cyan,
+                            ///// <summary>The color red.</summary>
+                            //Red,
+                            ///// <summary>The color magenta (purplish-red).</summary>
+                            //Magenta,
+                            ///// <summary>The color yellow.</summary>
+                            //Yellow,
+                            ///// <summary>The color white.</summary>
+                            //White,
+                            ConsoleColor.Gray, ConsoleColor.Blue, ConsoleColor.Gray,
+                            ConsoleColor.Cyan, ConsoleColor.Red, ConsoleColor.Magenta, ConsoleColor.Yellow,
+                            ConsoleColor.White
+                        };
+                        var random = Math.Abs(vectorClock.GetHashCode()) % valid.Length;
+                        changedFore = true;
+                        Console.ForegroundColor = valid[random];
                     }
 
                     base.WriteLine($"{vectorClock.PadRight(this.longest)} | {message}");
