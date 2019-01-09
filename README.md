@@ -1,3 +1,5 @@
+[![NuGet](https://img.shields.io/nuget/v/OpenTracing.Contrib.SystemDiagnosticsBridge.svg)](https://www.nuget.org/packages/OpenTracing.Contrib.SystemDiagnosticsBridge)
+
 # OpenTracing-System.Diagnostics
 Bridge between C# `System.Diagnostics` tracing and `OpenTracing`
 
