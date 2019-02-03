@@ -1,8 +1,13 @@
 ﻿namespace OpenTracing.Contrib.SystemDiagnostics.ToOpenTracing
 {
+    using System;
     using System.Collections;
     using OpenTracing.Util;
 
+    /// <summary>
+    /// Needed to be able to pass the operationName to the SpanFinished call since it's not exposed by OpenTracing
+    /// </summary>
+    [Serializable /* TODO: Implement this properly - just making a test run right now. - would not needed if there's a test teardown signal */]
     internal sealed class OpenTracingOperationStack : Stack
     {
         public OpenTracingOperationStack()

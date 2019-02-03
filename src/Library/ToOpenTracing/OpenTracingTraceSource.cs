@@ -13,7 +13,13 @@ namespace OpenTracing.Contrib.SystemDiagnostics.ToOpenTracing
     using OpenTracing.Contrib.EventHookTracer;
     using OpenTracing.Mock;
     using OpenTracing.Noop;
+    using OpenTracing.Util;
 
+    /// <summary>
+    /// Creates a <see cref="TraceSource"/> that will receive trace events from a paired <see cref="ITracer"/>.
+    ///
+    /// Does NOT hook those up to <see cref="Trace"/> nor <see cref="GlobalTracer.Instance"/>
+    /// </summary>
     public static class OpenTracingTraceSource
     {
         /// <summary>
@@ -44,7 +50,7 @@ namespace OpenTracing.Contrib.SystemDiagnostics.ToOpenTracing
             var traceSourceSink = new TraceSource("OpenTracing", SourceLevels.All);
 
             var eventHookTracer = new TraceSourceEventHookTracer(traceSourceSink);
-            
+
             return new TracerTraceSourcePair(
                 traceSourceSink,
                 eventHookTracer);
