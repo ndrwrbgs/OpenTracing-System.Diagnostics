@@ -58,7 +58,7 @@ namespace OpenTracing.Contrib.SystemDiagnostics.ToOpenTracing
 
         #region EventHandlers
 
-        private void OnEventHookTracerOnSpanFinished(object sender, EventHookTracer.SpanLifecycleEventArgs span)
+        private void OnEventHookTracerOnSpanFinished(object sender, SpanLifecycleEventArgs span)
         {
             // Need to copy to truly be AsyncLocal
             this.curOpNameStack.Value = new Stack<string>(this.curOpNameStack.Value.Reverse());
@@ -81,7 +81,7 @@ namespace OpenTracing.Contrib.SystemDiagnostics.ToOpenTracing
             this.PopAndIncrementClock();
         }
 
-        private void OnEventHookTracerOnSpanLog(object sender, EventHookTracer.LogEventArgs args)
+        private void OnEventHookTracerOnSpanLog(object sender, LogEventArgs args)
         {
             var curOpName = this.curOpNameStack.Value.Peek();
 
@@ -97,7 +97,7 @@ namespace OpenTracing.Contrib.SystemDiagnostics.ToOpenTracing
             traceSourceSink.TraceData(TraceEventType.Information, 3, dict);
         }
 
-        private void OnEventHookTracerOnSpanSetTag(object sender, EventHookTracer.SetTagEventArgs args)
+        private void OnEventHookTracerOnSpanSetTag(object sender, SetTagEventArgs args)
         {
             var curOpName = this.curOpNameStack.Value.Peek();
 
@@ -109,7 +109,7 @@ namespace OpenTracing.Contrib.SystemDiagnostics.ToOpenTracing
                 });
         }
 
-        private void OnEventHookTracerOnSpanActivated(object sender, EventHookTracer.SpanLifecycleEventArgs span)
+        private void OnEventHookTracerOnSpanActivated(object sender, SpanLifecycleEventArgs span)
         {
             // Need to copy to truly be AsyncLocal
             this.curOpNameStack.Value = new Stack<string>(this.curOpNameStack.Value.Reverse());
@@ -131,10 +131,7 @@ namespace OpenTracing.Contrib.SystemDiagnostics.ToOpenTracing
         public TraceSourceEventHookTracer(TraceSource traceSourceSink)
         {
             this.traceSourceSink = traceSourceSink;
-            var eventHookTracer = new EventHookTracer(
-                // We want something that actually keeps track of the current span.
-                // TODO: Pending work in the EventHookTracer project, we could remove this.
-                new MockTracer());
+            var eventHookTracer = new EventHookTracer();
 
             eventHookTracer.SpanActivated += this.OnEventHookTracerOnSpanActivated;
             eventHookTracer.SpanFinished += this.OnEventHookTracerOnSpanFinished;

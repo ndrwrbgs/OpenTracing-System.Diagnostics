@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>OpenTracing.Contrib.SystemDiagnosticsBridge</id>
-    <version>0.5.0</version>
+    <version>0.6.0</version>
     <authors>ndrwrbgs</authors>
     <owners>ndrwrbgs</owners>
     <licenseUrl>https://github.com/ndrwrbgs/OpenTracing-System.Diagnostics/blob/master/LICENSE</licenseUrl>
@@ -10,12 +10,12 @@
     <iconUrl>http://opentracing.io/img/favicon-32x32.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Provides interop between System.Diagnostics tracing constructs and OpenTracing. E.g. `Trace.CorrelationManager` -> `OpenTracing.ITracer`; `OpenTracing.ITracer` -> `TraceSource`; `TraceListener` -> `OpenTracing.ITracer`</description>
-    <releaseNotes>Add testing and json enabled tracer.</releaseNotes>
+    <releaseNotes>Update EventHookTracer dependency.</releaseNotes>
     <copyright>Copyright 2018</copyright>
     <tags>OpenTracing Trace CorrelationManager</tags>
     <dependencies>
       <dependency id="OpenTracing" version="0.12.0" />
-      <dependency id="OpenTracing.Contrib.EventHookTracer" version="0.5.0" />
+      <dependency id="OpenTracing.Contrib.EventHookTracer" version="0.9.0" />
     </dependencies>
   </metadata>
 </package>
