@@ -168,6 +168,9 @@ namespace OpenTracing.Contrib.SystemDiagnostics.ToOpenTracing
             /// Outputs OpenTracing messages to <see cref="Trace.Listeners"/>
             /// TODO: This should catch updates given to Trace.Listeners, but right now snapshots. When implementing the
             ///       proper solution, rename to TraceWrite[Line]
+            ///     We cannot actually catch updates to Trace.Listeners in the current BCL - one work
+            ///     around would be to have an OT -> Trace.Write plugin, but it would have to be sure
+            ///     NOT to infinite loop in the Trace.Write -captureTraceWrite-> OT -sendToAllListeners-> Trace.Write cycle
             /// </summary>
             CopyExistingTraceListeners = 1 << 2 | TraceSource,
         }
