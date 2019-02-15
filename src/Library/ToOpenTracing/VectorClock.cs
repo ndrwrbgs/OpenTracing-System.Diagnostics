@@ -1,18 +1,34 @@
 ﻿namespace OpenTracing.Contrib.SystemDiagnostics.ToOpenTracing {
     using System;
     using System.Linq;
+    using System.Runtime.Serialization;
     using System.Threading;
 
     /// <summary>
     /// TODO: This is super duper inefficient.
     /// </summary>
-    [Serializable /* TODO: Implement this properly - just making a test run right now. - would not needed if there's a test teardown signal */]
-    internal sealed class VectorClock
+    [Serializable]
+    internal sealed class VectorClock : ISerializable
     {
         private AsyncLocal<VectorClockValue> current = new AsyncLocal<VectorClockValue>();
 
         public VectorClock()
         {
+        }
+        
+        // Implement this method to serialize data. The method is called 
+        // on serialization.
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            // Use the AddValue method to specify serialized values.
+            info.AddValue("current", current.Value, typeof(VectorClockValue));
+        }
+
+        // The special constructor is used to deserialize values.
+        public VectorClock(SerializationInfo info, StreamingContext context)
+        {
+            // Reset the property value using the GetValue method.
+            current.Value = (VectorClockValue) info.GetValue("current", typeof(VectorClockValue));
         }
 
         public void Extend()
@@ -40,7 +56,7 @@
             }
         }
         
-        [Serializable /* TODO: Implement this properly - just making a test run right now. - would not needed if there's a test teardown signal */]
+        [Serializable]
         private sealed class VectorClockValue
         {
             public VectorClockValue parent;
